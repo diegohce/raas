@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/diegohce/easyrabbit"
+	"log"
 )
 
 type subscribeRequest struct {
@@ -19,6 +20,10 @@ func (sr *subscribeRequest) subscribe() error {
 
 	if err := erc.ConsumeWithCallback(sr.QueueName, "raas", sr.consume); err != nil {
 		return err
+	}
+
+	if err := storage.save(sr); err != nil {
+		log.Println("ERROR subscribe::", err, "saving subscription")
 	}
 
 	return nil
