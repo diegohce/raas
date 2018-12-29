@@ -21,7 +21,7 @@ func (pr *publishRequest) publish() error {
 
 	if err := erc.Publish(pr.ExchangeName,
 		pr.RoutingKey, []byte(pr.Body)); err != nil {
-			return err
+		return err
 	}
 	return nil
 }

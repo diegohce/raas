@@ -19,17 +19,16 @@ func (sr *subscribeRequest) consume(body []byte) error {
 
 	jMessage, err := json.Marshal(cbMessage)
 	if err != nil {
-		log.Println("ERROR on consumer for:", sr.CallbackUrl, sr.QueueName, "::", err)
+		log.Println("ERROR on consumer for:", sr.CallbackURL, sr.QueueName, "::", err)
 		return err
 	}
 
-	res, err := http.Post(sr.CallbackUrl, "application/json", bytes.NewReader(jMessage))
+	res, err := http.Post(sr.CallbackURL, "application/json", bytes.NewReader(jMessage))
 	if err != nil {
-		log.Println("ERROR on consumer for:", sr.CallbackUrl, sr.QueueName, "::", err, "body:", string(jMessage))
+		log.Println("ERROR on consumer for:", sr.CallbackURL, sr.QueueName, "::", err, "body:", string(jMessage))
 		return err
 	}
 	defer res.Body.Close()
 
 	return nil
 }
-

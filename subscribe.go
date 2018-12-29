@@ -7,7 +7,7 @@ import (
 type subscribeRequest struct {
 	RmqURI      string `json:"rmq_uri"`
 	QueueName   string `json:"queue_name"`
-	CallbackUrl string `json:"callback_url"`
+	CallbackURL string `json:"callback_url"`
 }
 
 func (sr *subscribeRequest) subscribe() error {
