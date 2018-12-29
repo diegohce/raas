@@ -5,11 +5,11 @@ import (
 )
 
 type memStorage struct {
-	data map[string] *subscribeRequest
+	data map[string]*subscribeRequest
 }
 
 func (s *memStorage) init() error {
-	s.data = make(map[string] *subscribeRequest)
+	s.data = make(map[string]*subscribeRequest)
 	return nil
 }
 

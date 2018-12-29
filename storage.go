@@ -12,7 +12,7 @@ type storer interface {
 }
 
 var (
-	storers map[string] storer
+	storers map[string]storer
 	storage storer
 )
 
@@ -22,7 +22,7 @@ const (
 
 func init() {
 
-	storers = map[string] storer{
+	storers = map[string]storer{
 		"mem":  &memStorage{},
 		"file": &fileStorage{},
 	}
@@ -36,4 +36,3 @@ func init() {
 		}
 	}
 }
-

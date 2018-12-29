@@ -8,11 +8,11 @@ import (
 )
 
 type fileStorage struct {
-	data map[string] *subscribeRequest
+	data map[string]*subscribeRequest
 }
 
 func (s *fileStorage) init() error {
-	s.data = make(map[string] *subscribeRequest)
+	s.data = make(map[string]*subscribeRequest)
 
 	content, err := ioutil.ReadFile("./filestorage.json")
 	if err != nil {
@@ -71,4 +71,3 @@ func (s *fileStorage) subscriptions() []*subscribeRequest {
 	}
 	return rv
 }
-
