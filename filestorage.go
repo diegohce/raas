@@ -24,10 +24,7 @@ func (s *fileStorage) init() error {
 		return err
 	}
 
-	if err := json.Unmarshal(content, s.mem.data); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(content, s.mem.data)
 }
 
 func (s *fileStorage) save(sub *subscribeRequest) error {
@@ -44,11 +41,7 @@ func (s *fileStorage) save(sub *subscribeRequest) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile("./filestorage.json", content, os.FileMode(0644)); err != nil {
-		return err
-	}
-
-	return nil
+	return ioutil.WriteFile("./filestorage.json", content, os.FileMode(0644))
 }
 
 func (s *fileStorage) remove(sub *subscribeRequest) {

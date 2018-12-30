@@ -19,9 +19,5 @@ func (pr *publishRequest) publish() error {
 	}
 	defer erc.Close()
 
-	if err := erc.Publish(pr.ExchangeName,
-		pr.RoutingKey, []byte(pr.Body)); err != nil {
-		return err
-	}
-	return nil
+	return erc.Publish(pr.ExchangeName, pr.RoutingKey, []byte(pr.Body))
 }
