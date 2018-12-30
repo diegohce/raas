@@ -2,24 +2,29 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
+	"sync"
 )
 
 type fileStorage struct {
-	data map[string]*subscribeRequest
+	mem   *memStorage
+	mutex *sync.RWMutex
 }
 
 func (s *fileStorage) init() error {
-	s.data = make(map[string]*subscribeRequest)
+
+	s.mem = &memStorage{}
+	s.mem.init()
+
+	s.mutex = &sync.RWMutex{}
 
 	content, err := ioutil.ReadFile("./filestorage.json")
 	if err != nil {
 		return err
 	}
 
-	if err := json.Unmarshal(content, s.data); err != nil {
+	if err := json.Unmarshal(content, s.mem.data); err != nil {
 		return err
 	}
 	return nil
@@ -27,14 +32,14 @@ func (s *fileStorage) init() error {
 
 func (s *fileStorage) save(sub *subscribeRequest) error {
 
-	key := fmt.Sprintf("%+v", sub)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
-	if _, ok := s.data[key]; ok {
-		return fmt.Errorf("Subscription %s already exists", key)
+	if err := s.mem.save(sub); err != nil {
+		return err
 	}
-	s.data[key] = sub
 
-	content, err := json.Marshal(s.data)
+	content, err := json.Marshal(s.mem.data)
 	if err != nil {
 		return err
 	}
@@ -48,11 +53,12 @@ func (s *fileStorage) save(sub *subscribeRequest) error {
 
 func (s *fileStorage) remove(sub *subscribeRequest) {
 
-	key := fmt.Sprintf("%+v", sub)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
-	delete(s.data, key)
+	s.mem.remove(sub)
 
-	content, err := json.Marshal(s.data)
+	content, err := json.Marshal(s.mem.data)
 	if err != nil {
 		return
 	}
@@ -64,10 +70,8 @@ func (s *fileStorage) remove(sub *subscribeRequest) {
 
 func (s *fileStorage) subscriptions() []*subscribeRequest {
 
-	var rv []*subscribeRequest
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 
-	for _, sub := range s.data {
-		rv = append(rv, sub)
-	}
-	return rv
+	return s.mem.subscriptions()
 }

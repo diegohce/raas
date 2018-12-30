@@ -6,9 +6,10 @@ import (
 )
 
 type subscribeRequest struct {
-	RmqURI      string `json:"rmq_uri"`
-	QueueName   string `json:"queue_name"`
-	CallbackURL string `json:"callback_url"`
+	RmqURI       string `json:"rmq_uri"`
+	QueueName    string `json:"queue_name"`
+	CallbackURL  string `json:"callback_url"`
+	stopConsumer chan bool
 }
 
 func (sr *subscribeRequest) subscribe() error {
@@ -18,7 +19,8 @@ func (sr *subscribeRequest) subscribe() error {
 		return err
 	}
 
-	if err := erc.ConsumeWithCallback(sr.QueueName, "raas", sr.consume); err != nil {
+	sr.stopConsumer, err = erc.ConsumeWithCallback(sr.QueueName, "raas", sr.consume)
+	if err != nil {
 		return err
 	}
 

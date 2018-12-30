@@ -2,18 +2,24 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
 type memStorage struct {
-	data map[string]*subscribeRequest
+	data  map[string]*subscribeRequest
+	mutex *sync.Mutex
 }
 
 func (s *memStorage) init() error {
 	s.data = make(map[string]*subscribeRequest)
+	s.mutex = &sync.Mutex{}
 	return nil
 }
 
 func (s *memStorage) save(sub *subscribeRequest) error {
+
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	key := fmt.Sprintf("%+v", sub)
 
@@ -26,6 +32,9 @@ func (s *memStorage) save(sub *subscribeRequest) error {
 }
 
 func (s *memStorage) remove(sub *subscribeRequest) {
+
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	key := fmt.Sprintf("%+v", sub)
 

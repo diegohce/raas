@@ -26,6 +26,7 @@ func (sr *subscribeRequest) consume(body []byte) error {
 	res, err := http.Post(sr.CallbackURL, "application/json", bytes.NewReader(jMessage))
 	if err != nil {
 		log.Println("ERROR on consumer for:", sr.CallbackURL, sr.QueueName, "::", err, "body:", string(jMessage))
+		sr.stopConsumer <- true
 		storage.remove(sr)
 		return err
 	}
