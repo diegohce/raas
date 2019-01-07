@@ -4,10 +4,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
+	"os"
 )
 
 const (
-	bind = ":9999"
+	defaultBind = ":9999"
 )
 
 var (
@@ -15,6 +16,10 @@ var (
 )
 
 func main() {
+	bind := os.Getenv("RAAS_BIND")
+	if bind == "" {
+		bind = defaultBind
+	}
 
 	router := httprouter.New()
 
